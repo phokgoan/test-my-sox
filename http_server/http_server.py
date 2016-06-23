@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
+from os import curdir, sep, path, getcwd, chdir
+import sched, time, pytz
+import random
+from threading import Thread, Lock
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
-import random
-from os import curdir, sep, path, getcwd, chdir
+
 import pymongo
-import sched, time
-from threading import Thread, Lock
 from bson import BSON
 
 scheduled_task = sched.scheduler(time.time, time.sleep)
@@ -30,13 +32,24 @@ def unicode_msg(s):
 
 def table_generator(table_content): 
 	return """
-	<table>
-	<tr>
-		<th>IP</th>
-		<th>Timestamp</th>
-		<th>Message</th>
-	</tr>
+	<table id="example" class="display" cellspacing="0" width="100%%">
+	<thead>
+		<tr>
+			<th>IP</th>
+			<th>Timestamp</th>
+			<th>Message</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>IP</th>
+			<th>Timestamp</th>
+			<th>Message</th>
+		</tr>
+	</tfoot>
+	<tbody>
 	%s
+	</tbody>
 	</table>
 	</div>
 	</body>
@@ -52,8 +65,10 @@ def refresh_table(sc):
 		global coll, result_table
 		result_table = ""
 
-		for doc in coll.find().sort([['date', pymongo.DESCENDING]])[:20]:
-			ts = doc['date']
+		document_count = coll.count() if coll.count() < 200 else 200
+
+		for doc in coll.find().sort([['date', pymongo.DESCENDING]])[:document_count]:
+			ts = pytz.utc.localize(doc['date'], is_dst=None).astimezone(pytz.timezone("Etc/GMT-8"))
 			ts_str = "%d/%02d/%02d %02d:%02d:%02d.%03d" % (ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second, int(ts.microsecond/1000))
 			msg = ''.join(list(doc['message']))
 	

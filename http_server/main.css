@@ -23,6 +23,11 @@
 	right: 0;
 	z-index: 0;
 
+	width: 70%;
+
+	color: #333;
+	font-family: "Helvetica", Arial, sans-serif;
+
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
@@ -34,6 +39,8 @@ h1 {
 	font-family: "Tahoma", Geneva, sans-serif;
 }
 
+
+/*
 table {
 	color: #333;
 
@@ -66,3 +73,4 @@ tr:nth-child(even) td { background: #F1F1F1; }
 tr:nth-child(odd) td { background: #FEFEFE; }	
 
 tr td:hover { background: #666; color: #FFF; }
+*/
